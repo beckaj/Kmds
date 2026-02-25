@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Check Application Status</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      padding: 30px;
+      background: #1f3a5f;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #1f3a5f;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+    button {
+      background: #1f3a5f;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 5px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #27548a;
+    }
+    .result {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #1f3a5f;
+    }
+    .success {
+      border-left-color: #28a745;
+      background: #d4edda;
+    }
+    .error {
+      border-left-color: #dc3545;
+      background: #f8d7da;
+    }
+    pre {
+      background: #263238;
+      color: #aed581;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0 5px;
+    }
+    .badge-green { background: #d4edda; color: #155724; }
+    .badge-blue { background: #d1ecf1; color: #0c5460; }
+    .badge-yellow { background: #fff3cd; color: #856404; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Check Application Status</h1>
+    <p style="color: #666;">Enter the application ID from the screenshot to check where it is</p>
+    
+    <input 
+      type="text" 
+      id="appId" 
+      placeholder="TAP-1770612210304-U9YAQO"
+      value="TAP-1770612210304-U9YAQO"
+    />
+    
+    <div>
+      <button onclick="checkApplication()">🔎 Check Application</button>
+      <button onclick="checkQueues()">📋 Check All Queues</button>
+      <button onclick="clearResults()">🗑️ Clear</button>
+    </div>
+    
+    <div id="results"></div>
+  </div>
+  
+  <script>
+    const projectId = "rkdrchffswbqiszdbuui";
+    const publicAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJrZHJjaGZmc3dicWlzemRidXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzNzMxMzEsImV4cCI6MjA4NTk0OTEzMX0.gkK7REbUajJ2oJ-IdFbO8Ao2Vv9ENJkXW2mc2L3wswg";
+    
+    async function apiCall(endpoint) {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-698be164${endpoint}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`,
+          },
+        }
+      );
+      return await response.json();
+    }
+    
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+    }
+    
+    async function checkApplication() {
+      const appId = document.getElementById('appId').value.trim();
+      if (!appId) {
+        alert('Please enter an application ID');
+        return;
+      }
+      
+      clearResults();
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<div class="result">⏳ Checking...</div>';
+      
+      try {
+        // Check if application exists
+        const appData = await apiCall(`/debug/application/${appId}`);
+        
+        let html = '';
+        
+        if (appData.success && appData.found) {
+          html += `<div class="result success">
+            <h3 style="margin-top:0;">✅ Application Found</h3>
+            <p><strong>ID:</strong> ${appData.application.id}</p>
+            <p><strong>Status:</strong> <span class="badge badge-blue">${appData.application.status}</span></p>
+            <p><strong>Current Stage:</strong> ${appData.application.currentStage || 'N/A'}</p>
+            <p><strong>Workflow:</strong></p>
+            <pre>${JSON.stringify(appData.application.workflow, null, 2)}</pre>
+          </div>`;
+          
+          // Check queues
+          const queues = await apiCall('/debug/queues');
+          if (queues.success) {
+            html += `<div class="result">
+              <h3 style="margin-top:0;">📋 Queue Status</h3>`;
+            
+            const queueNames = ['caseworker', 'revenueOfficer', 'fieldEngineer', 'commissioner'];
+            queueNames.forEach(qName => {
+              const queue = queues.queues[qName] || [];
+              const isInQueue = queue.includes(appId);
+              html += `<p>
+                <strong>${qName}:</strong> 
+                ${isInQueue ? 
+                  '<span class="badge badge-green">✓ IN QUEUE</span>' : 
+                  '<span class="badge badge-yellow">Not in queue</span>'
+                }
+                (Total: ${queue.length})
+              </p>`;
+            });
+            
+            html += `</div>`;
+          }
+          
+        } else {
+          html += `<div class="result error">
+            <h3 style="margin-top:0;">❌ Application Not Found</h3>
+            <p>Application ${appId} does not exist in the database</p>
+            <pre>${JSON.stringify(appData, null, 2)}</pre>
+          </div>`;
+        }
+        
+        resultsDiv.innerHTML = html;
+        
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="result error">
+          <h3 style="margin-top:0;">❌ Error</h3>
+          <pre>${error}</pre>
+        </div>`;
+      }
+    }
+    
+    async function checkQueues() {
+      clearResults();
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<div class="result">⏳ Checking all queues...</div>';
+      
+      try {
+        const data = await apiCall('/debug/queues');
+        
+        let html = '<div class="result success"><h3 style="margin-top:0;">📊 All Queues</h3>';
+        
+        if (data.success) {
+          const queueNames = [
+            { key: 'caseworker', name: 'Caseworker' },
+            { key: 'revenueOfficer', name: 'Revenue Officer' },
+            { key: 'fieldEngineer', name: 'Field Engineer' },
+            { key: 'commissioner', name: 'Commissioner' },
+          ];
+          
+          queueNames.forEach(q => {
+            const queue = data.queues[q.key] || [];
+            html += `<div style="margin: 15px 0;">
+              <strong>${q.name} Queue:</strong> 
+              <span class="badge ${queue.length > 0 ? 'badge-green' : 'badge-yellow'}">
+                ${queue.length} applications
+              </span>
+              ${queue.length > 0 ? '<pre>' + JSON.stringify(queue, null, 2) + '</pre>' : ''}
+            </div>`;
+          });
+          
+        } else {
+          html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+        
+        html += '</div>';
+        resultsDiv.innerHTML = html;
+        
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="result error">
+          <h3 style="margin-top:0;">❌ Error</h3>
+          <pre>${error}</pre>
+        </div>`;
+      }
+    }
+    
+    // Auto-check on load if there's a value
+    window.addEventListener('load', () => {
+      const appId = document.getElementById('appId').value;
+      if (appId) {
+        checkApplication();
+      }
+    });
+  </script>
+</body>
+</html>

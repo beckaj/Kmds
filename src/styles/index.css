@@ -1,0 +1,146 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* React DatePicker Custom Styles */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+.react-datepicker {
+  font-family: 'Poppins', sans-serif !important;
+  border: 1px solid #d3d8ff !important;
+  border-radius: 8px !important;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15) !important;
+  overflow: visible !important;
+}
+
+.react-datepicker__header {
+  background-color: #1f3a5f !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding-top: 12px !important;
+}
+
+.react-datepicker__current-month {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+.react-datepicker__day-name {
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.react-datepicker__day {
+  color: #170f49 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  border-radius: 4px !important;
+  transition: all 0.2s !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #e8f4f8 !important;
+  color: #0078a0 !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: #0078a0 !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #0078a0 !important;
+  color: white !important;
+}
+
+.react-datepicker__day--today {
+  font-weight: 600 !important;
+  color: #0078a0 !important;
+  border: 1px solid #0078a0 !important;
+}
+
+.react-datepicker__navigation {
+  top: 12px !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: white !important;
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: #f9a825 !important;
+}
+
+/* ============================================================================
+   Jalanidhi Custom Scrollbar — Light Gray Pill Design
+   Applied to all scrollable containers (horizontal + vertical)
+   ============================================================================ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+  margin: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+  border: 2px solid #f5f5f5;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: #6b7280;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f5f5f5;
+}
+
+/* Table-specific scroll container */
+.gov-table-scroll::-webkit-scrollbar {
+  height: 12px;
+}
+
+.gov-table-scroll::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+  margin: 0 8px;
+}
+
+.gov-table-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+  border: 2px solid #f5f5f5;
+}
