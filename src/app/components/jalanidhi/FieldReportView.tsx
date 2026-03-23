@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ChevronLeft, MapPin, Wrench, Calculator, CheckCircle2, ClipboardCheck, Circle, Download, FileText, Send } from 'lucide-react';
 import SectionTitle from './SectionTitle';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 

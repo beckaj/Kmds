@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Menu, User, ChevronDown, FileText, LogOut, RefreshCw, Droplets, Home as HomeIcon, LayoutList, X } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 import { BCCollectorData, BCApplication } from './BillCollectorMobileApp';

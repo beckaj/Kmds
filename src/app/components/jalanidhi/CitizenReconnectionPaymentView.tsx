@@ -19,8 +19,15 @@ export default function CitizenReconnectionPaymentView({ application, onBack }: 
   const [processing, setProcessing] = useState(false);
 
   // Check if payment is already completed
-  const isPaymentCompleted = application.status === 'payment_done' ||
-    (application.paymentDetails && application.paymentDetails.status === 'completed');
+  // IMPORTANT: Application status is the primary source of truth.
+  // If status is pending_payment/pendingPayment/sentToCitizenForPayment, citizen must pay first
+  // regardless of any stale paymentDetails that may exist on the object.
+  const isPendingPaymentStatus = application.status === 'pending_payment' || application.status === 'pendingPayment' || application.status === 'sentToCitizenForPayment';
+  const isPaymentCompleted = !isPendingPaymentStatus && (
+    application.status === 'payment_done' ||
+    application.status === 'commissioner_payment_verification' ||
+    (application.paymentDetails && application.paymentDetails.status === 'completed')
+  );
 
   // Extract reconnection-specific data
   const rrData = application.rrData || {};

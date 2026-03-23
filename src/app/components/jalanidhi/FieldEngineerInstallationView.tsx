@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ChevronLeft, CheckCircle, MapPin, Camera, User, Hammer, AlertCircle } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 import SectionTitle from './SectionTitle';

@@ -1,5 +1,6 @@
 import { GovInput } from "../ui/gov-input";
 import { GovSelect } from "../ui/gov-select";
+import { GovMultiSelect } from "../ui/gov-multi-select";
 import { IndianRupee, Info } from "lucide-react";
 import svgPaths from "../../../imports/svg-i1fu7njk59";
 import { filterDigitsOnly } from "../../utils/validation";
@@ -17,6 +18,7 @@ interface ConnectionDetailsStepProps {
     flatsOrHouses: string;
     plumberType: string;
     firmName: string;
+    plumberList: string;
   };
   errors: Record<string, string | undefined>;
   onInputChange: (field: string, value: string) => void;
@@ -49,7 +51,14 @@ const FIRM_NAME_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
-const MONTHS = ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'January', 'February', 'March'];
+const PLUMBER_LIST_OPTIONS = [
+  { value: "rajesh-kumar", label: "Rajesh Kumar" },
+  { value: "suresh-babu", label: "Suresh Babu" },
+  { value: "mahesh-gowda", label: "Mahesh Gowda" },
+  { value: "venkatesh-murthy", label: "Venkatesh Murthy" },
+  { value: "ganesh-hegde", label: "Ganesh Hegde" },
+  { value: "ramesh-shetty", label: "Ramesh Shetty" },
+];
 
 export default function ConnectionDetailsStep({ 
   formData, 
@@ -195,12 +204,18 @@ export default function ConnectionDetailsStep({
             placeholder="Select Plumber Type"
             options={PLUMBER_TYPE_OPTIONS}
             value={formData.plumberType}
-            onValueChange={(value) => onInputChange("plumberType", value)}
+            onValueChange={(value) => {
+              onInputChange("plumberType", value);
+              // Reset both fields when plumber type changes
+              onInputChange("firmName", "");
+              onInputChange("plumberList", "");
+            }}
             error={errors.plumberType}
           />
         </div>
 
-        {/* Firm Name */}
+        {/* Firm Name - shown when Contractor is selected */}
+        {formData.plumberType === "contractor" && (
         <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-[300px]">
           <p className="font-['Poppins',sans-serif] font-medium leading-[0] not-italic relative shrink-0 text-[#170f49] text-[14px] w-full whitespace-pre-wrap">
             <span className="leading-[9.801px]">Firm Name </span>
@@ -214,6 +229,24 @@ export default function ConnectionDetailsStep({
             error={errors.firmName}
           />
         </div>
+        )}
+
+        {/* Plumber List - shown when Individual is selected */}
+        {formData.plumberType === "individual" && (
+        <div className="content-stretch flex flex-col gap-[9px] items-start relative shrink-0 w-[300px]">
+          <p className="font-['Poppins',sans-serif] font-medium leading-[0] not-italic relative shrink-0 text-[#170f49] text-[14px] w-full whitespace-pre-wrap">
+            <span className="leading-[9.801px]">Plumber List </span>
+            <span className="leading-[9.801px] text-[#ff5f57]">*</span>
+          </p>
+          <GovMultiSelect
+            placeholder="Select Plumber(s)"
+            options={PLUMBER_LIST_OPTIONS}
+            value={formData.plumberList ? formData.plumberList.split(",") : []}
+            onChange={(values) => onInputChange("plumberList", values.join(","))}
+            error={errors.plumberList}
+          />
+        </div>
+        )}
       </div>
 
       {/* ── Non-Metered Billing Summary Panel ── */}

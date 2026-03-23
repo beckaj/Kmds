@@ -13,6 +13,9 @@ import PlumberDashboard from "./components/jalanidhi/PlumberDashboard";
 import CaseworkerOverview from "./components/jalanidhi/CaseworkerOverview";
 import CaseworkerDashboard from "./components/jalanidhi/CaseworkerDashboard";
 import CaseworkerSidebar from "./components/jalanidhi/CaseworkerSidebar";
+import { CaseworkerReconnectionDashboard } from "./components/jalanidhi/caseworker/reconnection";
+import { CaseworkerDisconnectionDashboard } from "./components/jalanidhi/caseworker/disconnection";
+import { FieldEngineerReconnectionDashboard } from "./components/jalanidhi/field-engineer/reconnection";
 import FieldEngineerSidebar from "./components/jalanidhi/FieldEngineerSidebar";
 import FieldEngineerDashboard from "./components/jalanidhi/FieldEngineerDashboard";
 import FieldEngineerApplicationView from "./components/jalanidhi/FieldEngineerApplicationView";
@@ -29,7 +32,7 @@ import RevenueOfficerSidebar from "./components/jalanidhi/RevenueOfficerSidebar"
 import RevenueOfficerDashboard from "./components/jalanidhi/RevenueOfficerDashboard";
 import RevenueOfficerApplicationView from "./components/jalanidhi/RevenueOfficerApplicationView";
 import RevenueOfficerForwardPage from "./components/jalanidhi/RevenueOfficerForwardPage";
-import RevenueOfficerReconnectionView from "./components/jalanidhi/RevenueOfficerReconnectionView";
+import { RevenueOfficerReconnectionDashboard, RevenueOfficerReconnectionView } from "./components/jalanidhi/revenue-officer/reconnection";
 import RevenueOfficerChangeConnectionView from "./components/jalanidhi/RevenueOfficerChangeConnectionView";
 import RevenueOfficerDCBCorrectionView from "./components/jalanidhi/RevenueOfficerDCBCorrectionView";
 import RevenueOfficerOverview from "./components/jalanidhi/RevenueOfficerOverview";
@@ -359,10 +362,10 @@ export default function App() {
         return <CaseworkerDashboard applicationType="newConnection" />;
       
       case "/jalanidhi/caseworker/tap-connection/reconnection-requests":
-        return <CaseworkerDashboard applicationType="reconnection" />;
+        return <CaseworkerReconnectionDashboard />;
       
       case "/jalanidhi/caseworker/tap-connection/disconnection-requests":
-        return <CaseworkerDashboard applicationType="disconnection" />;
+        return <CaseworkerDisconnectionDashboard />;
       
       case "/jalanidhi/caseworker/tap-connection/change-connection-type":
         return <CaseworkerDashboard applicationType="changeConnection" />;
@@ -395,7 +398,7 @@ export default function App() {
         return <FieldEngineerDashboard applicationType="newConnection" />;
       
       case "/jalanidhi/field-engineer/tap-connection/reconnection-requests":
-        return <FieldEngineerDashboard applicationType="reconnection" />;
+        return <FieldEngineerReconnectionDashboard />;
       
       case "/jalanidhi/field-engineer/tap-connection/disconnection-requests":
         return <FieldEngineerDashboard applicationType="disconnection" />;
@@ -442,7 +445,7 @@ export default function App() {
         return <RevenueOfficerDashboard applicationType="newConnection" />;
       
       case "/jalanidhi/revenue-officer/tap-connection/reconnection-requests":
-        return <RevenueOfficerDashboard applicationType="reconnection" />;
+        return <RevenueOfficerReconnectionDashboard />;
       
       case "/jalanidhi/revenue-officer/tap-connection/disconnection-requests":
         return <RevenueOfficerDashboard applicationType="disconnection" />;

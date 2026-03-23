@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ChevronLeft, User, FileText, CheckCircle, XCircle } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 import { BCCollectorData, BCApplication } from './BillCollectorMobileApp';

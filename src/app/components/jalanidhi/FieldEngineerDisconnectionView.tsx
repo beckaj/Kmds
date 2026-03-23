@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { ChevronLeft, CheckCircle, MapPin, Camera, User, Wrench, AlertCircle } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
-import { RemarksTimeline } from './RemarksTimeline';
+import { RemarksTimeline, RemarkEntry } from './RemarksTimeline';
 import SectionTitle from './SectionTitle';
 
 interface FieldEngineerDisconnectionViewProps {

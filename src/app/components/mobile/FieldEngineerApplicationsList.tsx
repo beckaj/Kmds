@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { FileText, ChevronRight, Calendar, MapPin, User, LogOut } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 
@@ -222,13 +223,13 @@ export default function FieldEngineerApplicationsList({
                     {app.visitPurpose && (
                       <div className="mt-2 inline-block">
                         <span className="px-2 py-1 bg-[#0078a0]/10 text-[#0078a0] text-[10px] font-medium font-['Poppins',sans-serif] rounded-full">
-                          {app.visitPurpose}
+                          Verification Pending
                         </span>
                       </div>
                     )}
 
-                    {/* Status Badge */}
-                    {app.status && (
+                    {/* Status Badge - only show if different from visit purpose */}
+                    {app.status && app.status !== app.visitPurpose && (
                       <div className="mt-2 inline-block ml-2">
                         <span className={`px-2 py-1 text-[10px] font-medium font-['Poppins',sans-serif] rounded-full ${
                           app.status === 'Verified' 

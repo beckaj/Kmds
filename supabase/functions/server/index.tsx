@@ -1651,6 +1651,32 @@ app.post("/make-server-698be164/plumber/mobile/submit-installation-report", asyn
       reportSubmittedAt: new Date().toISOString(),
     };
 
+    // Ensure workflow.fieldEngineer exists so FE dashboard three-tier filter includes this app
+    if (!application.workflow.fieldEngineer) {
+      application.workflow.fieldEngineer = {
+        status: 'pending_installation_verification',
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // Update existing FE workflow to reflect installation verification stage
+      application.workflow.fieldEngineer = {
+        ...application.workflow.fieldEngineer,
+        installationVerificationPending: true,
+        installationReturnedAt: new Date().toISOString(),
+      };
+    }
+
+    // Push a workflow step so FE timeline is complete
+    if (!application.workflow.steps) application.workflow.steps = [];
+    application.workflow.steps.push({
+      step: 'plumber_installation_submitted',
+      actor: 'plumber',
+      actorName: plumberName,
+      timestamp: new Date().toISOString(),
+      status: 'completed',
+      comment: 'Installation work completed. Report submitted for Field Engineer verification.',
+    });
+
     application.updatedAt = new Date().toISOString();
     await kv.set(`application:${applicationId}`, application);
 
@@ -1665,6 +1691,14 @@ app.post("/make-server-698be164/plumber/mobile/submit-installation-report", asyn
       feQueue.push(applicationId);
       await kv.set('field_engineer:installation_queue', feQueue);
     }
+
+    // ALSO add to main field_engineer:queue so FE dashboard reliably picks it up
+    const feMainQueue = await kv.get('field_engineer:queue') || [];
+    if (!feMainQueue.includes(applicationId)) {
+      feMainQueue.push(applicationId);
+      await kv.set('field_engineer:queue', feMainQueue);
+    }
+    console.log(`[PLUMBER INSTALL REPORT] Added ${applicationId} to field_engineer:queue and field_engineer:installation_queue`);
 
     // If this was an appeal-approved application, update the appeal record
     if (application.isAppealApproved && application.appealId) {
@@ -3995,6 +4029,9 @@ app.post("/make-server-698be164/commissioner/approve-for-payment", async (c) => 
     application.status = 'sentToCitizenForPayment';
     application.currentStage = 'payment';
 
+    // Clear any stale paymentDetails so citizen sees payment form (not receipt)
+    delete application.paymentDetails;
+
     // Save commissioner's approved estimation (may have edited prices)
     if (estimationRows && estimationRows.length > 0) {
       application.approvedEstimation = {
@@ -4886,6 +4923,8 @@ app.post("/make-server-698be164/commissioner/reconnection/approve", async (c) =>
     // Update application status
     application.status = 'sentToCitizenForPayment';
     application.currentStage = 'payment';
+    // Clear any stale paymentDetails so citizen sees payment form (not receipt)
+    delete application.paymentDetails;
     application.workflow.commissioner = {
       status: 'approved',
       action: 'approvedForPayment',
@@ -5121,6 +5160,8 @@ app.post("/make-server-698be164/commissioner/change-connection/approve", async (
     // Update application status
     application.status = 'sentToCitizenForPayment';
     application.currentStage = 'payment';
+    // Clear any stale paymentDetails so citizen sees payment form (not receipt)
+    delete application.paymentDetails;
     if (!application.workflow) { application.workflow = {}; }
     application.workflow.commissioner = {
       status: 'approved',
@@ -6103,6 +6144,8 @@ app.post("/make-server-698be164/plumber-license/commissioner/approve", async (c)
     const now = new Date().toISOString();
     appData.status = 'pendingPayment';
     appData.updatedAt = now;
+    // Clear any stale paymentDetails so citizen sees payment form (not receipt)
+    delete appData.paymentDetails;
     appData.commissionerComments = comment;
     appData.commissionerDecision = 'approved';
     appData.workflow = appData.workflow || { steps: [] };
@@ -9143,6 +9186,8 @@ app.post("/make-server-698be164/appeal/commissioner-action", async (c) => {
           origApp.status = 'sentToCitizenForPayment';
           origApp.currentStage = 'payment';
           origApp.updatedAt = timestamp;
+          // Clear any stale paymentDetails so citizen sees payment form (not receipt)
+          delete origApp.paymentDetails;
           origApp.isAppealApproved = true;
           origApp.appealId = appealId;
 

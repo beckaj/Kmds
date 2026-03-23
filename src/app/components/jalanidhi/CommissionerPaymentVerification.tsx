@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ChevronLeft, CheckCircle, CreditCard, FileText, Download, Calendar, User, Eye } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 import { ImageWithFallback } from '../figma/ImageWithFallback';

@@ -363,10 +363,6 @@ export default function PlumberRegistrationForm() {
     else if (!/^[6-9]\d{9}$/.test(contFormData.mobileNumber)) e.mobileNumber = "Enter a valid 10-digit mobile number starting with 6-9";
     if (!contFormData.emailId.trim()) e.emailId = "Email ID is required";
     else { const emailErr = validateEmail(contFormData.emailId); if (emailErr) e.emailId = emailErr; }
-    if (!contFormData.panNumber.trim()) e.panNumber = "PAN number is required";
-    else { const panErr = validatePAN(contFormData.panNumber); if (panErr) e.panNumber = panErr; }
-    if (!contFormData.gstNumber.trim()) e.gstNumber = "GST number is required";
-    else { const gstErr = validateGST(contFormData.gstNumber); if (gstErr) e.gstNumber = gstErr; }
     if (!contFormData.authFullName.trim()) e.authFullName = "Full name is required";
     if (!contFormData.authDesignation.trim()) e.authDesignation = "Designation is required";
     if (!contFormData.authMobile.trim()) e.authMobile = "Mobile number is required";
@@ -784,8 +780,7 @@ export default function PlumberRegistrationForm() {
                     required
                     placeholder="Enter PAN number"
                     value={contFormData.panNumber}
-                    onChange={(e) => handleContInputChange("panNumber", filterAlphanumeric(e.target.value).toUpperCase())}
-                    error={contErrors.panNumber}
+                    onChange={(e) => handleContInputChange("panNumber", e.target.value.toUpperCase())}
                     maxLength={10}
                   />
                   <GovInput
@@ -793,8 +788,7 @@ export default function PlumberRegistrationForm() {
                     required
                     placeholder="Enter GST number"
                     value={contFormData.gstNumber}
-                    onChange={(e) => handleContInputChange("gstNumber", filterAlphanumeric(e.target.value).toUpperCase())}
-                    error={contErrors.gstNumber}
+                    onChange={(e) => handleContInputChange("gstNumber", e.target.value.toUpperCase())}
                     maxLength={15}
                   />
                   <div>

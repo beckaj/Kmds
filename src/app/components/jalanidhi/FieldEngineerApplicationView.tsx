@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import SectionTitle from './SectionTitle';
-import { ChevronLeft, User, MapPin, Droplet, FileText, Download, Calendar, Eye } from 'lucide-react';
+import { ChevronLeft, User, MapPin, Droplet, FileText, Download, Calendar, Eye, RotateCcw, CheckCircle, MessageSquare, Phone } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 import svgPaths from '../../../imports/svg-qcyk0j46yr';
 import FieldReportView from './FieldReportView';
@@ -166,6 +166,12 @@ function SchedulePopup({
       if (success) {
         setScheduledInfo({ date: dateStr, purpose: visitPurpose });
         setShowSuccess(true);
+        // Auto-close the popup after a short delay so user sees the success state briefly
+        setTimeout(() => {
+          setShowSuccess(false);
+          setScheduledInfo(null);
+          onClose();
+        }, 1500);
       }
     } finally {
       setSubmitting(false);

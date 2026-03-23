@@ -145,6 +145,8 @@ export default function PlumberDashboard() {
     const saved = localStorage.getItem('plumber_showChangeConnectionWorkView');
     return saved === 'true';
   });
+
+  const [statusFilter, setStatusFilter] = useState('all');
   
   // Persist state to localStorage
   useEffect(() => {
@@ -177,6 +179,7 @@ export default function PlumberDashboard() {
 
   useEffect(() => {
     localStorage.setItem('plumber_activeTab', activeTab);
+    setStatusFilter('all');
   }, [activeTab]);
 
   useEffect(() => {
@@ -401,8 +404,14 @@ export default function PlumberDashboard() {
     return false;
   });
 
-  // Apply search filter on top of tab filter
-  const filteredApplications = tabFilteredApplications.filter(app => {
+  // Apply status filter on top of tab filter
+  const statusFilteredApplications = tabFilteredApplications.filter(app => {
+    if (statusFilter === 'all') return true;
+    return app.status === statusFilter;
+  });
+
+  // Apply search filter on top of status filter
+  const filteredApplications = statusFilteredApplications.filter(app => {
     const isReconnection = app.type === 'reconnection';
     const isDisconnection = app.type === 'disconnection';
     const isChangeConnection = app.type === 'changeConnection';
@@ -614,7 +623,58 @@ export default function PlumberDashboard() {
 
         {/* Header with Search */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-between gap-4">
+            {/* Status Filter Dropdown */}
+            <div className="flex items-center gap-2">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="font-['Poppins',sans-serif] text-[13px] text-[#28334b] bg-white border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#1f3a5f] focus:ring-1 focus:ring-[#1f3a5f] cursor-pointer min-w-[200px]"
+              >
+                <option value="all">All Statuses</option>
+                {activeTab === 'pending' && (
+                  <option value="pending_plumber">Pending</option>
+                )}
+                {activeTab === 'estimation_sent' && (
+                  <>
+                    <option value="estimation_sent">Estimation Sent</option>
+                    <option value="pending_applicant_review">Under Review</option>
+                  </>
+                )}
+                {activeTab === 'reconnection_work' && (
+                  <>
+                    <option value="sentToPlumberForReconnection">Reconnection Pending</option>
+                    <option value="plumber_accepted_reconnection">Accepted - Field Visit</option>
+                    <option value="reconnection_work_submitted">Work Submitted</option>
+                  </>
+                )}
+                {activeTab === 'installation_work' && (
+                  <>
+                    <option value="sentToCitizenForPayment">Installation Pending</option>
+                    <option value="installation_approved">Ready for Installation</option>
+                    <option value="approved">Approved</option>
+                    <option value="plumber_accepted_installation">Accepted - Field Visit</option>
+                    <option value="installation_work_submitted">Report Submitted</option>
+                    <option value="installation_completed">Completed</option>
+                  </>
+                )}
+                {activeTab === 'disconnection_work' && (
+                  <>
+                    <option value="sentToPlumberForDisconnection">Disconnection Pending</option>
+                    <option value="plumber_accepted_disconnection">Accepted - Field Visit</option>
+                    <option value="disconnection_work_submitted">Report Submitted</option>
+                  </>
+                )}
+                {activeTab === 'change_connection_work' && (
+                  <>
+                    <option value="sentToPlumberForChangeConnection">Change Connection Pending</option>
+                    <option value="plumber_accepted_change_connection">Accepted - Field Visit</option>
+                    <option value="change_connection_work_submitted">Report Submitted</option>
+                    <option value="change_connection_forwarded_to_fe">Forwarded to FE</option>
+                  </>
+                )}
+              </select>
+            </div>
             {/* Search Box */}
             <div className="bg-white flex gap-[8px] items-center px-[12px] py-[10px] rounded-[32px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.2),0px_0px_0px_1px_rgba(104,113,130,0.2)] w-[320px]">
               <SearchIcon />

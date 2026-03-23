@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { FileText, ChevronRight, MapPin, User, LogOut, Wrench, CheckCircle2 } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 

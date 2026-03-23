@@ -162,6 +162,7 @@ interface FormData {
   flatsOrHouses: string;
   plumberType: string;
   firmName: string;
+  plumberList: string;
 }
 
 const steps = [
@@ -263,6 +264,7 @@ export default function NewTapConnectionForm() {
       flatsOrHouses: "",
       plumberType: "",
       firmName: "",
+      plumberList: "",
     };
   });
 
@@ -408,7 +410,8 @@ export default function NewTapConnectionForm() {
       if (!formData.propertyTypeCategory) newErrors.propertyTypeCategory = "Please select property type category";
       if (!formData.flatsOrHouses) newErrors.flatsOrHouses = "Please enter number of flats/houses";
       if (!formData.plumberType) newErrors.plumberType = "Please select plumber type";
-      if (!formData.firmName) newErrors.firmName = "Please enter firm name";
+      if (formData.plumberType === "contractor" && !formData.firmName) newErrors.firmName = "Please select firm name";
+      if (formData.plumberType === "individual" && !formData.plumberList) newErrors.plumberList = "Please select at least one plumber";
     }
 
     setErrors(newErrors);
@@ -527,6 +530,7 @@ export default function NewTapConnectionForm() {
           flatsOrHouses: "",
           plumberType: "",
           firmName: "",
+          plumberList: "",
         });
         setPropertyId("");
         setIsPropertyVerified(false);
@@ -1007,6 +1011,7 @@ export default function NewTapConnectionForm() {
                     flatsOrHouses: "",
                     plumberType: "",
                     firmName: "",
+                    plumberList: "",
                   });
                   setCurrentStep(1);
                   setErrors({});

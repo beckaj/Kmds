@@ -28,7 +28,7 @@ export default function JalanihiSidebar({ activePath, onNavigate, isPlumber = fa
     plumberChildren.push({ id: 'plumber-register', label: 'New Registration', path: '/jalanidhi/plumber/register' });
     plumberChildren.push({ id: 'plumber-renew', label: 'Renewal of License', path: '/jalanidhi/plumber/renew' });
     plumberChildren.push({ id: 'plumber-app-status', label: 'Application Status', path: '/jalanidhi/plumber/application-status' });
-    plumberChildren.push({ id: 'plumber-dashboard', label: 'Dashboard', path: '/jalanidhi/plumber/dashboard' });
+    plumberChildren.push({ id: 'plumber-dashboard', label: 'Action List', path: '/jalanidhi/plumber/dashboard' });
   }
   if (isGeneralCitizen) {
     plumberChildren.push({ id: 'plumber-register', label: 'New Registration', path: '/jalanidhi/plumber/register' });
